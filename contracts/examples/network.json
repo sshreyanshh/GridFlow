@@ -1,0 +1,612 @@
+{
+  "nodes": [
+    {
+      "id": "S1",
+      "name": "ONGC Mumbai High",
+      "type": "SOURCE",
+      "capacity": 600,
+      "supply": 600,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 160,
+        "y": 618
+      }
+    },
+    {
+      "id": "S2",
+      "name": "RIL KG-D6 Onshore Terminal",
+      "type": "SOURCE",
+      "capacity": 400,
+      "supply": 400,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 379,
+        "y": 682
+      }
+    },
+    {
+      "id": "S3",
+      "name": "Jharia Coalfield",
+      "type": "SOURCE",
+      "capacity": 350,
+      "supply": 350,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 460,
+        "y": 517
+      }
+    },
+    {
+      "id": "T1",
+      "name": "Petronet Dahej LNG",
+      "type": "IMPORT_TERMINAL",
+      "capacity": 500,
+      "supply": 500,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 186,
+        "y": 566
+      }
+    },
+    {
+      "id": "T2",
+      "name": "Petronet Kochi LNG",
+      "type": "IMPORT_TERMINAL",
+      "capacity": 450,
+      "supply": 450,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 259,
+        "y": 844
+      }
+    },
+    {
+      "id": "T3",
+      "name": "IndianOil Ennore LNG",
+      "type": "IMPORT_TERMINAL",
+      "capacity": 300,
+      "supply": 300,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 339,
+        "y": 767
+      }
+    },
+    {
+      "id": "P1",
+      "name": "Reliance Jamnagar Refinery",
+      "type": "PROCESSING",
+      "capacity": 700,
+      "supply": 0,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 130,
+        "y": 550
+      }
+    },
+    {
+      "id": "P2",
+      "name": "IOCL Panipat Refinery",
+      "type": "PROCESSING",
+      "capacity": 600,
+      "supply": 0,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 271,
+        "y": 383
+      }
+    },
+    {
+      "id": "P3",
+      "name": "IOCL Mathura Refinery",
+      "type": "PROCESSING",
+      "capacity": 500,
+      "supply": 0,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 287,
+        "y": 428
+      }
+    },
+    {
+      "id": "P4",
+      "name": "IOCL Paradip Refinery",
+      "type": "PROCESSING",
+      "capacity": 350,
+      "supply": 0,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 466,
+        "y": 599
+      }
+    },
+    {
+      "id": "H1",
+      "name": "Jaipur Distribution Hub",
+      "type": "DISTRIBUTION_HUB",
+      "capacity": 700,
+      "supply": 0,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 249,
+        "y": 442
+      }
+    },
+    {
+      "id": "H2",
+      "name": "Nagpur Distribution Hub",
+      "type": "DISTRIBUTION_HUB",
+      "capacity": 800,
+      "supply": 0,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 315,
+        "y": 579
+      }
+    },
+    {
+      "id": "H3",
+      "name": "Hyderabad Distribution Hub",
+      "type": "DISTRIBUTION_HUB",
+      "capacity": 700,
+      "supply": 0,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 303,
+        "y": 668
+      }
+    },
+    {
+      "id": "H4",
+      "name": "Patna Distribution Hub",
+      "type": "DISTRIBUTION_HUB",
+      "capacity": 600,
+      "supply": 0,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 434,
+        "y": 473
+      }
+    },
+    {
+      "id": "G1",
+      "name": "NTPC Vindhyachal",
+      "type": "POWER_PLANT",
+      "capacity": 550,
+      "supply": 0,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 386,
+        "y": 509
+      }
+    },
+    {
+      "id": "G2",
+      "name": "NTPC Ramagundam",
+      "type": "POWER_PLANT",
+      "capacity": 700,
+      "supply": 0,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 323,
+        "y": 636
+      }
+    },
+    {
+      "id": "G3",
+      "name": "NTPC Simhadri",
+      "type": "POWER_PLANT",
+      "capacity": 550,
+      "supply": 0,
+      "demand": 0,
+      "priority": null,
+      "position": {
+        "x": 395,
+        "y": 663
+      }
+    },
+    {
+      "id": "D1",
+      "name": "Mumbai Demand Centre",
+      "type": "DEMAND_CENTRE",
+      "capacity": 900,
+      "supply": 0,
+      "demand": 600,
+      "priority": 2,
+      "position": {
+        "x": 191,
+        "y": 628
+      }
+    },
+    {
+      "id": "D2",
+      "name": "Delhi NCR Demand Centre",
+      "type": "DEMAND_CENTRE",
+      "capacity": 750,
+      "supply": 0,
+      "demand": 500,
+      "priority": 3,
+      "position": {
+        "x": 277,
+        "y": 402
+      }
+    },
+    {
+      "id": "D3",
+      "name": "Bengaluru Demand Centre",
+      "type": "DEMAND_CENTRE",
+      "capacity": 450,
+      "supply": 0,
+      "demand": 300,
+      "priority": 3,
+      "position": {
+        "x": 285,
+        "y": 773
+      }
+    },
+    {
+      "id": "D4",
+      "name": "Kolkata Demand Centre",
+      "type": "DEMAND_CENTRE",
+      "capacity": 300,
+      "supply": 0,
+      "demand": 200,
+      "priority": 2,
+      "position": {
+        "x": 499,
+        "y": 545
+      }
+    },
+    {
+      "id": "D5",
+      "name": "Chennai Demand Centre",
+      "type": "DEMAND_CENTRE",
+      "capacity": 600,
+      "supply": 0,
+      "demand": 400,
+      "priority": 1,
+      "position": {
+        "x": 338,
+        "y": 770
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "E01",
+      "from": "S1",
+      "to": "P1",
+      "capacity": 500,
+      "cost": 2,
+      "transitTime": 4
+    },
+    {
+      "id": "E02",
+      "from": "S1",
+      "to": "P2",
+      "capacity": 300,
+      "cost": 3,
+      "transitTime": 5
+    },
+    {
+      "id": "E03",
+      "from": "S2",
+      "to": "P2",
+      "capacity": 400,
+      "cost": 2,
+      "transitTime": 3
+    },
+    {
+      "id": "E04",
+      "from": "S2",
+      "to": "P3",
+      "capacity": 200,
+      "cost": 4,
+      "transitTime": 6
+    },
+    {
+      "id": "E05",
+      "from": "S3",
+      "to": "P4",
+      "capacity": 350,
+      "cost": 1,
+      "transitTime": 2
+    },
+    {
+      "id": "E06",
+      "from": "T1",
+      "to": "P1",
+      "capacity": 400,
+      "cost": 3,
+      "transitTime": 2
+    },
+    {
+      "id": "E07",
+      "from": "T1",
+      "to": "P2",
+      "capacity": 200,
+      "cost": 4,
+      "transitTime": 3
+    },
+    {
+      "id": "E08",
+      "from": "T2",
+      "to": "P3",
+      "capacity": 400,
+      "cost": 3,
+      "transitTime": 3
+    },
+    {
+      "id": "E09",
+      "from": "T2",
+      "to": "P4",
+      "capacity": 150,
+      "cost": 5,
+      "transitTime": 4
+    },
+    {
+      "id": "E10",
+      "from": "T3",
+      "to": "P3",
+      "capacity": 300,
+      "cost": 2,
+      "transitTime": 5
+    },
+    {
+      "id": "E11",
+      "from": "T3",
+      "to": "P2",
+      "capacity": 150,
+      "cost": 4,
+      "transitTime": 6
+    },
+    {
+      "id": "E12",
+      "from": "P1",
+      "to": "H1",
+      "capacity": 400,
+      "cost": 2,
+      "transitTime": 2
+    },
+    {
+      "id": "E13",
+      "from": "P1",
+      "to": "H2",
+      "capacity": 400,
+      "cost": 3,
+      "transitTime": 3
+    },
+    {
+      "id": "E14",
+      "from": "P2",
+      "to": "H2",
+      "capacity": 450,
+      "cost": 2,
+      "transitTime": 2
+    },
+    {
+      "id": "E15",
+      "from": "P2",
+      "to": "H3",
+      "capacity": 300,
+      "cost": 3,
+      "transitTime": 3
+    },
+    {
+      "id": "E16",
+      "from": "P3",
+      "to": "H3",
+      "capacity": 350,
+      "cost": 2,
+      "transitTime": 3
+    },
+    {
+      "id": "E17",
+      "from": "P3",
+      "to": "H4",
+      "capacity": 300,
+      "cost": 3,
+      "transitTime": 4
+    },
+    {
+      "id": "E18",
+      "from": "P4",
+      "to": "H4",
+      "capacity": 250,
+      "cost": 2,
+      "transitTime": 2
+    },
+    {
+      "id": "E19",
+      "from": "P4",
+      "to": "H3",
+      "capacity": 150,
+      "cost": 4,
+      "transitTime": 4
+    },
+    {
+      "id": "E20",
+      "from": "H1",
+      "to": "H2",
+      "capacity": 200,
+      "cost": 1,
+      "transitTime": 1
+    },
+    {
+      "id": "E21",
+      "from": "H2",
+      "to": "H3",
+      "capacity": 200,
+      "cost": 1,
+      "transitTime": 1
+    },
+    {
+      "id": "E22",
+      "from": "H3",
+      "to": "H4",
+      "capacity": 150,
+      "cost": 1,
+      "transitTime": 1
+    },
+    {
+      "id": "E23",
+      "from": "H2",
+      "to": "H1",
+      "capacity": 200,
+      "cost": 1,
+      "transitTime": 1
+    },
+    {
+      "id": "E24",
+      "from": "H3",
+      "to": "H2",
+      "capacity": 200,
+      "cost": 1,
+      "transitTime": 1
+    },
+    {
+      "id": "E25",
+      "from": "H1",
+      "to": "G1",
+      "capacity": 450,
+      "cost": 1,
+      "transitTime": 1
+    },
+    {
+      "id": "E26",
+      "from": "H2",
+      "to": "G1",
+      "capacity": 200,
+      "cost": 2,
+      "transitTime": 2
+    },
+    {
+      "id": "E27",
+      "from": "H2",
+      "to": "G2",
+      "capacity": 500,
+      "cost": 1,
+      "transitTime": 1
+    },
+    {
+      "id": "E28",
+      "from": "H3",
+      "to": "G2",
+      "capacity": 250,
+      "cost": 2,
+      "transitTime": 2
+    },
+    {
+      "id": "E29",
+      "from": "H3",
+      "to": "G3",
+      "capacity": 400,
+      "cost": 1,
+      "transitTime": 1
+    },
+    {
+      "id": "E30",
+      "from": "H4",
+      "to": "G3",
+      "capacity": 200,
+      "cost": 2,
+      "transitTime": 2
+    },
+    {
+      "id": "E31",
+      "from": "H2",
+      "to": "D2",
+      "capacity": 250,
+      "cost": 2,
+      "transitTime": 2
+    },
+    {
+      "id": "E32",
+      "from": "H4",
+      "to": "D3",
+      "capacity": 150,
+      "cost": 2,
+      "transitTime": 2
+    },
+    {
+      "id": "E33",
+      "from": "G1",
+      "to": "D1",
+      "capacity": 350,
+      "cost": 1,
+      "transitTime": 1
+    },
+    {
+      "id": "E34",
+      "from": "G1",
+      "to": "D5",
+      "capacity": 250,
+      "cost": 2,
+      "transitTime": 2
+    },
+    {
+      "id": "E35",
+      "from": "G2",
+      "to": "D1",
+      "capacity": 300,
+      "cost": 2,
+      "transitTime": 2
+    },
+    {
+      "id": "E36",
+      "from": "G2",
+      "to": "D2",
+      "capacity": 300,
+      "cost": 1,
+      "transitTime": 1
+    },
+    {
+      "id": "E37",
+      "from": "G2",
+      "to": "D5",
+      "capacity": 200,
+      "cost": 2,
+      "transitTime": 2
+    },
+    {
+      "id": "E38",
+      "from": "G3",
+      "to": "D3",
+      "capacity": 250,
+      "cost": 1,
+      "transitTime": 1
+    },
+    {
+      "id": "E39",
+      "from": "G3",
+      "to": "D4",
+      "capacity": 200,
+      "cost": 1,
+      "transitTime": 1
+    },
+    {
+      "id": "E40",
+      "from": "G3",
+      "to": "D2",
+      "capacity": 150,
+      "cost": 3,
+      "transitTime": 3
+    }
+  ]
+}

@@ -1,0 +1,453 @@
+{
+  "version": 0,
+  "nodes": [
+    {
+      "id": "S1",
+      "status": "ACTIVE",
+      "effectiveSupply": 600,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 600
+    },
+    {
+      "id": "S2",
+      "status": "ACTIVE",
+      "effectiveSupply": 400,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 400
+    },
+    {
+      "id": "S3",
+      "status": "ACTIVE",
+      "effectiveSupply": 350,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 350
+    },
+    {
+      "id": "T1",
+      "status": "ACTIVE",
+      "effectiveSupply": 500,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 150
+    },
+    {
+      "id": "T2",
+      "status": "ACTIVE",
+      "effectiveSupply": 450,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 200
+    },
+    {
+      "id": "T3",
+      "status": "ACTIVE",
+      "effectiveSupply": 300,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 300
+    },
+    {
+      "id": "P1",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 550
+    },
+    {
+      "id": "P2",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 600
+    },
+    {
+      "id": "P3",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 500
+    },
+    {
+      "id": "P4",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 350
+    },
+    {
+      "id": "H1",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 400
+    },
+    {
+      "id": "H2",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 800
+    },
+    {
+      "id": "H3",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 650
+    },
+    {
+      "id": "H4",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 350
+    },
+    {
+      "id": "G1",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 550
+    },
+    {
+      "id": "G2",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 700
+    },
+    {
+      "id": "G3",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 0,
+      "served": 0,
+      "shortage": 0,
+      "throughput": 400
+    },
+    {
+      "id": "D1",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 600,
+      "served": 600,
+      "shortage": 0,
+      "throughput": 600
+    },
+    {
+      "id": "D2",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 500,
+      "served": 500,
+      "shortage": 0,
+      "throughput": 500
+    },
+    {
+      "id": "D3",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 300,
+      "served": 300,
+      "shortage": 0,
+      "throughput": 300
+    },
+    {
+      "id": "D4",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 200,
+      "served": 200,
+      "shortage": 0,
+      "throughput": 200
+    },
+    {
+      "id": "D5",
+      "status": "ACTIVE",
+      "effectiveSupply": 0,
+      "effectiveDemand": 400,
+      "served": 400,
+      "shortage": 0,
+      "throughput": 400
+    }
+  ],
+  "edges": [
+    {
+      "id": "E01",
+      "status": "ACTIVE",
+      "effectiveCapacity": 500,
+      "flow": 500
+    },
+    {
+      "id": "E02",
+      "status": "ACTIVE",
+      "effectiveCapacity": 300,
+      "flow": 100
+    },
+    {
+      "id": "E03",
+      "status": "ACTIVE",
+      "effectiveCapacity": 400,
+      "flow": 400
+    },
+    {
+      "id": "E04",
+      "status": "ACTIVE",
+      "effectiveCapacity": 200,
+      "flow": 0
+    },
+    {
+      "id": "E05",
+      "status": "ACTIVE",
+      "effectiveCapacity": 350,
+      "flow": 350
+    },
+    {
+      "id": "E06",
+      "status": "ACTIVE",
+      "effectiveCapacity": 400,
+      "flow": 50
+    },
+    {
+      "id": "E07",
+      "status": "ACTIVE",
+      "effectiveCapacity": 200,
+      "flow": 100
+    },
+    {
+      "id": "E08",
+      "status": "ACTIVE",
+      "effectiveCapacity": 400,
+      "flow": 200
+    },
+    {
+      "id": "E09",
+      "status": "ACTIVE",
+      "effectiveCapacity": 150,
+      "flow": 0
+    },
+    {
+      "id": "E10",
+      "status": "ACTIVE",
+      "effectiveCapacity": 300,
+      "flow": 300
+    },
+    {
+      "id": "E11",
+      "status": "ACTIVE",
+      "effectiveCapacity": 150,
+      "flow": 0
+    },
+    {
+      "id": "E12",
+      "status": "ACTIVE",
+      "effectiveCapacity": 400,
+      "flow": 400
+    },
+    {
+      "id": "E13",
+      "status": "ACTIVE",
+      "effectiveCapacity": 400,
+      "flow": 150
+    },
+    {
+      "id": "E14",
+      "status": "ACTIVE",
+      "effectiveCapacity": 450,
+      "flow": 450
+    },
+    {
+      "id": "E15",
+      "status": "ACTIVE",
+      "effectiveCapacity": 300,
+      "flow": 150
+    },
+    {
+      "id": "E16",
+      "status": "ACTIVE",
+      "effectiveCapacity": 350,
+      "flow": 350
+    },
+    {
+      "id": "E17",
+      "status": "ACTIVE",
+      "effectiveCapacity": 300,
+      "flow": 150
+    },
+    {
+      "id": "E18",
+      "status": "ACTIVE",
+      "effectiveCapacity": 250,
+      "flow": 200
+    },
+    {
+      "id": "E19",
+      "status": "ACTIVE",
+      "effectiveCapacity": 150,
+      "flow": 150
+    },
+    {
+      "id": "E20",
+      "status": "ACTIVE",
+      "effectiveCapacity": 200,
+      "flow": 0
+    },
+    {
+      "id": "E21",
+      "status": "ACTIVE",
+      "effectiveCapacity": 200,
+      "flow": 0
+    },
+    {
+      "id": "E22",
+      "status": "ACTIVE",
+      "effectiveCapacity": 150,
+      "flow": 0
+    },
+    {
+      "id": "E23",
+      "status": "ACTIVE",
+      "effectiveCapacity": 200,
+      "flow": 0
+    },
+    {
+      "id": "E24",
+      "status": "ACTIVE",
+      "effectiveCapacity": 200,
+      "flow": 200
+    },
+    {
+      "id": "E25",
+      "status": "ACTIVE",
+      "effectiveCapacity": 450,
+      "flow": 400
+    },
+    {
+      "id": "E26",
+      "status": "ACTIVE",
+      "effectiveCapacity": 200,
+      "flow": 150
+    },
+    {
+      "id": "E27",
+      "status": "ACTIVE",
+      "effectiveCapacity": 500,
+      "flow": 450
+    },
+    {
+      "id": "E28",
+      "status": "ACTIVE",
+      "effectiveCapacity": 250,
+      "flow": 250
+    },
+    {
+      "id": "E29",
+      "status": "ACTIVE",
+      "effectiveCapacity": 400,
+      "flow": 200
+    },
+    {
+      "id": "E30",
+      "status": "ACTIVE",
+      "effectiveCapacity": 200,
+      "flow": 200
+    },
+    {
+      "id": "E31",
+      "status": "ACTIVE",
+      "effectiveCapacity": 250,
+      "flow": 200
+    },
+    {
+      "id": "E32",
+      "status": "ACTIVE",
+      "effectiveCapacity": 150,
+      "flow": 150
+    },
+    {
+      "id": "E33",
+      "status": "ACTIVE",
+      "effectiveCapacity": 350,
+      "flow": 300
+    },
+    {
+      "id": "E34",
+      "status": "ACTIVE",
+      "effectiveCapacity": 250,
+      "flow": 250
+    },
+    {
+      "id": "E35",
+      "status": "ACTIVE",
+      "effectiveCapacity": 300,
+      "flow": 300
+    },
+    {
+      "id": "E36",
+      "status": "ACTIVE",
+      "effectiveCapacity": 300,
+      "flow": 250
+    },
+    {
+      "id": "E37",
+      "status": "ACTIVE",
+      "effectiveCapacity": 200,
+      "flow": 150
+    },
+    {
+      "id": "E38",
+      "status": "ACTIVE",
+      "effectiveCapacity": 250,
+      "flow": 150
+    },
+    {
+      "id": "E39",
+      "status": "ACTIVE",
+      "effectiveCapacity": 200,
+      "flow": 200
+    },
+    {
+      "id": "E40",
+      "status": "ACTIVE",
+      "effectiveCapacity": 150,
+      "flow": 50
+    }
+  ],
+  "summary": {
+    "totalSupply": 2600,
+    "totalDemand": 2000,
+    "totalServed": 2000,
+    "unmetDemand": 0,
+    "servedPercent": 100,
+    "baselineServedPercent": 100
+  }
+}
