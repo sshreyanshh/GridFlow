@@ -9,8 +9,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 160,
-        "y": 618
+        "x": 157,
+        "y": 622
       }
     },
     {
@@ -22,8 +22,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 379,
-        "y": 682
+        "x": 374,
+        "y": 686
       }
     },
     {
@@ -35,8 +35,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 460,
-        "y": 517
+        "x": 450,
+        "y": 500
       }
     },
     {
@@ -48,8 +48,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 186,
-        "y": 566
+        "x": 180,
+        "y": 560
       }
     },
     {
@@ -61,8 +61,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 259,
-        "y": 844
+        "x": 252,
+        "y": 814
       }
     },
     {
@@ -74,8 +74,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 339,
-        "y": 767
+        "x": 336,
+        "y": 735
       }
     },
     {
@@ -88,7 +88,7 @@
       "priority": null,
       "position": {
         "x": 130,
-        "y": 550
+        "y": 536
       }
     },
     {
@@ -100,8 +100,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 271,
-        "y": 383
+        "x": 266,
+        "y": 330
       }
     },
     {
@@ -113,8 +113,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 287,
-        "y": 428
+        "x": 290,
+        "y": 412
       }
     },
     {
@@ -126,8 +126,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 466,
-        "y": 599
+        "x": 457,
+        "y": 586
       }
     },
     {
@@ -139,8 +139,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 249,
-        "y": 442
+        "x": 243,
+        "y": 408
       }
     },
     {
@@ -152,8 +152,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 315,
-        "y": 579
+        "x": 310,
+        "y": 575
       }
     },
     {
@@ -165,8 +165,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 303,
-        "y": 668
+        "x": 300,
+        "y": 665
       }
     },
     {
@@ -178,8 +178,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 434,
-        "y": 473
+        "x": 430,
+        "y": 460
       }
     },
     {
@@ -191,8 +191,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 386,
-        "y": 509
+        "x": 382,
+        "y": 493
       }
     },
     {
@@ -204,8 +204,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 323,
-        "y": 636
+        "x": 320,
+        "y": 638
       }
     },
     {
@@ -217,8 +217,8 @@
       "demand": 0,
       "priority": null,
       "position": {
-        "x": 395,
-        "y": 663
+        "x": 393,
+        "y": 660
       }
     },
     {
@@ -230,8 +230,8 @@
       "demand": 600,
       "priority": 2,
       "position": {
-        "x": 191,
-        "y": 628
+        "x": 187,
+        "y": 626
       }
     },
     {
@@ -243,8 +243,8 @@
       "demand": 500,
       "priority": 3,
       "position": {
-        "x": 277,
-        "y": 402
+        "x": 273,
+        "y": 382
       }
     },
     {
@@ -256,8 +256,8 @@
       "demand": 300,
       "priority": 3,
       "position": {
-        "x": 285,
-        "y": 773
+        "x": 280,
+        "y": 746
       }
     },
     {
@@ -269,8 +269,8 @@
       "demand": 200,
       "priority": 2,
       "position": {
-        "x": 499,
-        "y": 545
+        "x": 496,
+        "y": 535
       }
     },
     {
@@ -282,8 +282,8 @@
       "demand": 400,
       "priority": 1,
       "position": {
-        "x": 338,
-        "y": 770
+        "x": 336,
+        "y": 767
       }
     }
   ],
