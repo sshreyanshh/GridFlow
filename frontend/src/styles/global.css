@@ -50,6 +50,26 @@ h1, h2, h3, h4, p { margin: 0; }
 .drawer { position: relative; z-index: 2; top: auto; bottom: auto; display: flex; flex: 0 0 var(--drawer-width); width: var(--drawer-width); height: 100%; min-width: 0; overflow: visible; background: var(--card); border: 1px solid var(--border); border-radius: 0; transition: flex-basis 220ms ease, border-width 220ms ease; }
 .controls { --drawer-width: 286px; }
 .insights { --drawer-width: 390px; }
+.controls .panel-heading h2 { font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+.controls .section-heading h3, .insights .section-heading h3 { font-size: 13px; font-weight: 700; letter-spacing: -.015em; }
+.controls label { font-size: 11px; }
+.controls select { padding: 9px 10px; font-size: 12px; }
+.controls .control-section { padding: 14px 0; }
+.controls .section-heading { margin-bottom: 10px; }
+.controls .scenario { align-items: center; padding: 10px 0; }
+.controls .scenario-info b { font-size: 12px; font-weight: 600; line-height: 1.35; }
+.controls .scenario-run { min-width: 48px; min-height: 30px; font-size: 10px; font-weight: 600; }
+.controls .data-stamp { font-size: 10px; }
+.insights .tabs button { min-height: 36px; font-size: 10px; font-weight: 600; }
+.insights .section-heading { margin-bottom: 11px; }
+.insights .kpi { gap: 4px; padding: 10px; }
+.insights .kpi span, .insights .kpi small { font-size: 9px; }
+.insights .kpi strong { font-size: 16px; font-weight: 700; }
+.insights .data-table { font-size: 10px; }
+.insights .data-table th { font-size: 9px; font-weight: 600; }
+.insights .summary-table th:first-child, .insights .summary-table td:first-child { width: 43%; }
+.insights .summary-table th:not(:first-child), .insights .summary-table td:not(:first-child) { width: 19%; }
+.insights .summary-table .table-link { font-size: 10px; font-weight: 600; line-height: 1.35; }
 .drawer-closed { --drawer-width: 0px !important; border-width: 0; }
 .drawer-content { flex: 1 1 auto; min-width: 0; overflow: auto; padding: 48px 12px 12px; opacity: 1; transition: opacity 120ms ease 50ms; }
 .drawer-closed .drawer-content { visibility: hidden; opacity: 0; pointer-events: none; transition-delay: 0ms; }

@@ -189,17 +189,17 @@ export default function Dashboard() {
       ];
       return <>
         <section className="insight-section">
-          <div className="section-heading"><div><p className="eyebrow">CURRENT STATE</p><h3>Network summary</h3></div><span className="data-stamp">VERSION {data.state.version}</span></div>
+          <div className="section-heading"><h3>Network summary</h3><span className="data-stamp">VERSION {data.state.version}</span></div>
           <div className="kpis">{metrics.map(([label, value, unit]) => <article className="kpi" key={label}><span>{label}</span><strong>{value}</strong><small>{unit}</small></article>)}</div>
           <div className="service-track" aria-label={`Current service ${summary.servedPercent.toFixed(1)} percent`}><span style={{ width: `${Math.min(100, summary.servedPercent)}%` }}/></div>
           <p className="track-caption">BASELINE <b>{summary.baselineServedPercent.toFixed(1)}%</b><span>CURRENT <b>{summary.servedPercent.toFixed(1)}%</b></span></p>
         </section>
         <section className="insight-section">
-          <div className="section-heading"><div><p className="eyebrow">DEMAND</p><h3>Demand centre telemetry</h3></div><span className="data-stamp">{demandCentres.length} CENTRES</span></div>
-          <div className="table-scroll"><table className="data-table"><thead><tr><th>Centre</th><th>Status</th><th>Demand</th><th>Served</th><th>Shortage</th><th>Prio</th></tr></thead><tbody>
+          <div className="section-heading"><h3>Demand centres</h3><span className="data-stamp">{demandCentres.length} CENTRES</span></div>
+          <div className="table-scroll"><table className="data-table summary-table"><thead><tr><th>Centre</th><th>Demand</th><th>Served</th><th>Shortage</th></tr></thead><tbody>
             {demandCentres.map((node) => {
               const state = data.state.nodes.find((entry) => entry.id === node.id);
-              return <tr key={node.id}><td><button className="table-link" type="button" onClick={() => setHighlight({ nodes: [node.id], edges: [] })}>{node.id}<small>{node.name}</small></button></td><td>{state.status}</td><td>{state.effectiveDemand.toFixed(0)}</td><td>{state.served.toFixed(0)}</td><td className={state.shortage > 0 ? 'value-alert' : ''}>{state.shortage.toFixed(0)}</td><td>P{node.priority}</td></tr>;
+              return <tr key={node.id}><td><button className="table-link" type="button" onClick={() => setHighlight({ nodes: [node.id], edges: [] })}>{node.name}</button></td><td>{state.effectiveDemand.toFixed(0)}</td><td>{state.served.toFixed(0)}</td><td className={state.shortage > 0 ? 'value-alert' : ''}>{state.shortage.toFixed(0)}</td></tr>;
             })}
           </tbody></table></div>
         </section>
@@ -208,9 +208,9 @@ export default function Dashboard() {
 
     if (tab === 'Shortages') {
       return <section className="insight-section">
-        <div className="section-heading"><div><p className="eyebrow">SERVICE IMPACT</p><h3>Unmet demand</h3></div><span className="data-stamp">{shortages.length} AFFECTED</span></div>
-        {shortages.length ? <div className="table-scroll"><table className="data-table"><thead><tr><th>Centre</th><th>Priority</th><th>Demand</th><th>Served</th><th>Shortage</th><th>Share</th></tr></thead><tbody>
-          {shortages.map((shortage) => <tr key={shortage.nodeId}><td><button className="table-link" type="button" onClick={() => setHighlight({ nodes: [shortage.nodeId], edges: [] })}>{shortage.nodeId}<small>{shortage.name}</small></button></td><td>P{shortage.priority}</td><td>{shortage.demand.toFixed(0)}</td><td>{shortage.served.toFixed(0)}</td><td className="value-alert">{shortage.shortage.toFixed(0)}</td><td><div className="mini-track"><i className="danger" style={{ width: `${shortage.demand ? shortage.shortage / shortage.demand * 100 : 0}%` }}/></div></td></tr>)}
+        <div className="section-heading"><h3>Shortages</h3><span className="data-stamp">{shortages.length} AFFECTED</span></div>
+        {shortages.length ? <div className="table-scroll"><table className="data-table"><thead><tr><th>Centre</th><th>Demand</th><th>Served</th><th>Shortage</th><th>Share</th></tr></thead><tbody>
+          {shortages.map((shortage) => <tr key={shortage.nodeId}><td><button className="table-link" type="button" onClick={() => setHighlight({ nodes: [shortage.nodeId], edges: [] })}>{shortage.name}</button></td><td>{shortage.demand.toFixed(0)}</td><td>{shortage.served.toFixed(0)}</td><td className="value-alert">{shortage.shortage.toFixed(0)}</td><td><div className="mini-track"><i className="danger" style={{ width: `${shortage.demand ? shortage.shortage / shortage.demand * 100 : 0}%` }}/></div></td></tr>)}
         </tbody></table></div> : <p className="empty">No shortages. Current supply meets demand.</p>}
       </section>;
     }
@@ -218,21 +218,20 @@ export default function Dashboard() {
     if (tab === 'Recovery') {
       return <>
         <section className="insight-section">
-          <div className="section-heading"><div><p className="eyebrow">FLOW PLAN</p><h3>Recommended allocations</h3></div><span className="data-stamp">{data.recovery?.allocations?.length || 0} ROUTES</span></div>
+          <div className="section-heading"><h3>Recovery plan</h3><span className="data-stamp">{data.recovery?.allocations?.length || 0} ROUTES</span></div>
           {Object.keys(recoveryGroups).length ? <div className="allocation-table">{Object.entries(recoveryGroups).map(([centre, allocations]) => <div className="allocation-group" key={centre}><h4>{centre}</h4>{allocations.map((allocation, index) => <button className="allocation-row" type="button" key={`${centre}-${index}`} onClick={() => choosePath(allocation)}><span className="path-value">{allocation.path.join(' → ')}</span><span>{allocation.flow.toFixed(0)} EU/day</span><span>Cost {allocation.totalCost}</span><span>{allocation.totalTime} h</span><span className="row-action">Show route</span></button>)}</div>)}</div> : <p className="empty">No recovery plan yet. Apply a disruption to generate allocations.</p>}
         </section>
-        {data.recovery?.unresolved?.length > 0 && <section className="insight-section"><div className="section-heading"><div><p className="eyebrow">UNRESOLVED</p><h3>Remaining shortages</h3></div></div><div className="table-scroll"><table className="data-table"><thead><tr><th>Centre</th><th>Shortage</th><th>Reason</th></tr></thead><tbody>{data.recovery.unresolved.map((item) => <tr key={item.nodeId}><td>{item.nodeId}</td><td className="value-alert">{item.shortage.toFixed(0)} EU/day</td><td>{item.reason}</td></tr>)}</tbody></table></div></section>}
-        {data.recovery?.recommendations?.length > 0 && <section className="insight-section"><div className="section-heading"><div><p className="eyebrow">ACTIONS</p><h3>Recommendations</h3></div></div><div className="table-scroll"><table className="data-table"><thead><tr><th>Type</th><th>Target</th><th>Priority</th><th>Recommendation</th></tr></thead><tbody>{data.recovery.recommendations.map((item, index) => <tr key={`${item.type}-${item.targetId || index}`}><td>{item.type}</td><td>{item.targetId || '—'}</td><td>{item.priority ?? '—'}</td><td className="wrap-cell">{item.message}</td></tr>)}</tbody></table></div></section>}
+        {data.recovery?.unresolved?.length > 0 && <section className="insight-section"><div className="section-heading"><h3>Remaining shortages</h3></div><div className="table-scroll"><table className="data-table"><thead><tr><th>Centre</th><th>Shortage</th><th>Reason</th></tr></thead><tbody>{data.recovery.unresolved.map((item) => <tr key={item.nodeId}><td>{item.nodeId}</td><td className="value-alert">{item.shortage.toFixed(0)} EU/day</td><td>{item.reason}</td></tr>)}</tbody></table></div></section>}
+        {data.recovery?.recommendations?.length > 0 && <section className="insight-section"><div className="section-heading"><h3>Recommendations</h3></div><div className="table-scroll"><table className="data-table"><thead><tr><th>Type</th><th>Target</th><th>Priority</th><th>Recommendation</th></tr></thead><tbody>{data.recovery.recommendations.map((item, index) => <tr key={`${item.type}-${item.targetId || index}`}><td>{item.type}</td><td>{item.targetId || '—'}</td><td>{item.priority ?? '—'}</td><td className="wrap-cell">{item.message}</td></tr>)}</tbody></table></div></section>}
       </>;
     }
 
     if (tab === 'Critical') {
       return <section className="insight-section">
-        <div className="section-heading"><div><p className="eyebrow">RESILIENCE ANALYSIS</p><h3>Critical nodes</h3></div><button className="button-compact" type="button" onClick={loadCritical} disabled={busy === 'critical'}>{busy === 'critical' ? 'Analyzing…' : critical ? 'Refresh analysis' : 'Run analysis'}</button></div>
-        <p className="section-note">Structural weak points are articulation points in the active, undirected network projection.</p>
+        <div className="section-heading"><h3>Critical nodes</h3><button className="button-compact" type="button" onClick={loadCritical} disabled={busy === 'critical'}>{busy === 'critical' ? 'Analyzing…' : critical ? 'Refresh' : 'Analyze'}</button></div>
         {critical ? <>
-          <div className="critical-points"><span>ARTICULATION POINTS</span>{critical.articulationPoints.length ? critical.articulationPoints.map((id) => <button className="inline-action" type="button" key={id} onClick={() => setHighlight({ nodes: [id], edges: [] })}>{id}</button>) : <b>None detected</b>}</div>
-          <div className="section-heading subheading"><div><p className="eyebrow">FLOW-BASED RANKING</p><h3>Impact if removed</h3></div></div>
+          <div className="critical-points"><span>KEY NODES</span>{critical.articulationPoints.length ? critical.articulationPoints.map((id) => <button className="inline-action" type="button" key={id} onClick={() => setHighlight({ nodes: [id], edges: [] })}>{id}</button>) : <b>None detected</b>}</div>
+          <div className="section-heading subheading"><h3>Impact if removed</h3></div>
           <div className="table-scroll"><table className="data-table"><thead><tr><th>Rank</th><th>Node</th><th>Additional unmet demand</th><th>Increase</th></tr></thead><tbody>
             {critical.ranking.slice(0, 8).map((item, index) => <tr key={item.nodeId}><td>{String(index + 1).padStart(2, '0')}</td><td><button className="table-link" type="button" onClick={() => setHighlight({ nodes: [item.nodeId], edges: [] })}>{item.nodeId}<small>{item.name}</small></button></td><td>{item.unmetDemandIfRemoved.toFixed(0)} EU/day</td><td>{item.increasePercent?.toFixed(1) ?? '—'}%</td></tr>)}
           </tbody></table></div>
@@ -242,7 +241,7 @@ export default function Dashboard() {
 
     if (tab === 'Routes') {
       return <section className="insight-section">
-        <div className="section-heading"><div><p className="eyebrow">PATH ANALYSIS</p><h3>Route finder</h3></div></div>
+        <div className="section-heading"><h3>Route finder</h3></div>
         <form className="route-form" onSubmit={doRoute}>
           <label>From<select value={routeFrom} onChange={(event) => setRouteFrom(event.target.value)}>{data.network.nodes.filter((node) => ['SOURCE', 'IMPORT_TERMINAL'].includes(node.type)).map((node) => <option key={node.id} value={node.id}>{node.id} · {node.name}</option>)}</select></label>
           <label>To<select value={routeTo} onChange={(event) => setRouteTo(event.target.value)}>{demandCentres.map((node) => <option key={node.id} value={node.id}>{node.id} · {node.name}</option>)}</select></label>
@@ -254,7 +253,7 @@ export default function Dashboard() {
     }
 
     return <section className="insight-section">
-      <div className="section-heading"><div><p className="eyebrow">SIMULATION HISTORY</p><h3>Event log</h3></div><button className="button-compact" type="button" onClick={async () => { try { await refreshEvents(); setError(null); } catch (requestError) { setError(requestError); } }}>Refresh log</button></div>
+      <div className="section-heading"><h3>Event log</h3><button className="button-compact" type="button" onClick={async () => { try { await refreshEvents(); setError(null); } catch (requestError) { setError(requestError); } }}>Refresh</button></div>
       {events.length ? <div className="table-scroll"><table className="data-table"><thead><tr><th>Sequence</th><th>Event type</th><th>Details</th></tr></thead><tbody>{[...events].reverse().map((event) => <tr key={event.seq}><td>#{String(event.seq).padStart(3, '0')}</td><td>{event.kind.replaceAll('_', ' ')}</td><td className="wrap-cell">{event.message}</td></tr>)}</tbody></table></div> : <p className="empty">No simulation events recorded.</p>}
     </section>;
   };
@@ -279,9 +278,9 @@ export default function Dashboard() {
       <aside className={`controls drawer panel ${controlsOpen ? 'drawer-open' : 'drawer-closed'}`} aria-label="Simulation controls">
         <button className="drawer-toggle drawer-toggle-left" type="button" aria-expanded={controlsOpen} aria-label={`${controlsOpen ? 'Collapse' : 'Expand'} controls drawer`} onClick={() => toggleDrawer('controls')}><UtilityIcon name={controlsOpen ? 'chevronLeft' : 'controls'}/><span>Controls</span></button>
         <div className="drawer-content" inert={controlsOpen ? undefined : ''}>
-        <div className="panel-heading"><p className="eyebrow">OPERATIONS</p><h2>Simulation controls</h2></div>
+        <div className="panel-heading"><h2>Simulation controls</h2></div>
         <section className="control-section">
-          <div className="section-heading"><div><p className="eyebrow">MANUAL INPUT</p><h3>Apply disruption</h3></div></div>
+          <div className="section-heading"><h3>Apply disruption</h3></div>
           <form onSubmit={doApply}>
             <label>Disruption type<select value={type} onChange={(event) => { setType(event.target.value); setTarget(''); }}><option value="NODE_OUTAGE">Node outage</option><option value="EDGE_DISRUPTION">Edge disruption</option><option value="SUPPLY_REDUCTION">Supply reduction</option><option value="DEMAND_SURGE">Demand surge</option></select></label>
             <label>Target asset<select required value={target} onChange={(event) => setTarget(event.target.value)}><option value="">Select target</option>{targets.map((item) => <option key={item.id} value={item.id}>{item.id} · {item.name || `${item.from} → ${item.to}`}</option>)}</select></label>
@@ -290,13 +289,12 @@ export default function Dashboard() {
           </form>
         </section>
         <section className="control-section">
-          <div className="section-heading"><div><p className="eyebrow">PRESET SCENARIOS</p><h3>Scenario runner</h3></div><span className="data-stamp">{data.scenarios.length} PRESETS</span></div>
-          <p className="section-note">Scenarios apply to current state. Reset first for a clean run.</p>
-          <div className="scenario-list">{data.scenarios.map((scenario) => <article className="scenario" key={scenario.id}><div className="scenario-info"><span className="scenario-id">{scenario.id}</span><b>{scenario.name}</b><p>{scenario.description}</p><small>{scenario.disruptions.map((disruption) => `${disruption.type.replaceAll('_', ' ')} ${disruption.targetId}`).join(' · ')}</small></div><button className="scenario-run" type="button" onClick={async () => { try { const result = await run(scenario.id); setHighlight({ nodes: result.impact.exposedNodes, edges: result.impact.exposedEdges }); } catch { /* The simulation context displays the request error. */ } }} disabled={Boolean(busy)}>{busy === 'scenario' ? '…' : 'Run'}</button></article>)}</div>
+          <div className="section-heading"><h3>Preset scenarios</h3><span className="data-stamp">{data.scenarios.length}</span></div>
+          <div className="scenario-list">{data.scenarios.map((scenario) => <article className="scenario" key={scenario.id}><div className="scenario-info"><b>{scenario.name}</b></div><button className="scenario-run" type="button" onClick={async () => { try { const result = await run(scenario.id); setHighlight({ nodes: result.impact.exposedNodes, edges: result.impact.exposedEdges }); } catch { /* The simulation context displays the request error. */ } }} disabled={Boolean(busy)}>{busy === 'scenario' ? '…' : 'Run'}</button></article>)}</div>
         </section>
         <section className="control-section selection">
-          <div className="section-heading"><div><p className="eyebrow">GRAPH INSPECTOR</p><h3>Selected asset</h3></div></div>
-          {selection ? <><div className="selection-title"><b>{selection.id}</b><span>{selection.type || 'NETWORK EDGE'}</span></div><p className="selection-name">{selection.name || `${selection.from} → ${selection.to}`}</p><div className="selection-grid">{selection.from ? <><span>FLOW <b>{selection.flow ?? 0}</b></span><span>CAPACITY <b>{selection.effectiveCapacity ?? selection.capacity}</b></span><span>COST <b>{selection.cost}</b></span><span>TIME <b>{selection.transitTime} h</b></span></> : <><span>CAPACITY <b>{selection.capacity}</b></span><span>SUPPLY <b>{selection.effectiveSupply ?? selection.supply}</b></span><span>SERVED <b>{selection.served ?? 0} / {selection.effectiveDemand ?? selection.demand}</b></span><span>THROUGHPUT <b>{selection.throughput ?? 0}</b></span></>}</div></> : <p className="empty compact-empty">Select a network node or link to inspect its current state.</p>}
+          <div className="section-heading"><h3>Selection</h3></div>
+          {selection ? <><div className="selection-title"><b>{selection.id}</b><span>{selection.type || 'NETWORK EDGE'}</span></div><p className="selection-name">{selection.name || `${selection.from} → ${selection.to}`}</p><div className="selection-grid">{selection.from ? <><span>FLOW <b>{selection.flow ?? 0}</b></span><span>CAPACITY <b>{selection.effectiveCapacity ?? selection.capacity}</b></span><span>COST <b>{selection.cost}</b></span><span>TIME <b>{selection.transitTime} h</b></span></> : <><span>CAPACITY <b>{selection.capacity}</b></span><span>SUPPLY <b>{selection.effectiveSupply ?? selection.supply}</b></span><span>SERVED <b>{selection.served ?? 0} / {selection.effectiveDemand ?? selection.demand}</b></span><span>THROUGHPUT <b>{selection.throughput ?? 0}</b></span></>}</div></> : <p className="empty compact-empty">Select a map item to inspect.</p>}
         </section>
         </div>
       </aside>
