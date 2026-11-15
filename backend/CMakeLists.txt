@@ -23,10 +23,11 @@ target_link_libraries(gridflow_server PRIVATE gridflow_settings Threads::Threads
 
 enable_testing()
 add_executable(gridflow_tests ${GF_TEST_SOURCES} ${GF_LIB_SOURCES})
-target_link_libraries(gridflow_tests PRIVATE gridflow_settings)
+target_link_libraries(gridflow_tests PRIVATE gridflow_settings Threads::Threads)
 file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/.." GRIDFLOW_REPO_ROOT)
 target_compile_definitions(gridflow_tests PRIVATE
     GRIDFLOW_REPO_ROOT="${GRIDFLOW_REPO_ROOT}"
+    GRIDFLOW_DATA_DIR="${GRIDFLOW_REPO_ROOT}/data"
 )
 add_test(NAME all_tests COMMAND gridflow_tests)
 
