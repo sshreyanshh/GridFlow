@@ -95,6 +95,13 @@ nlohmann::json stateToJson(const Graph& graph) {
     };
 }
 
+nlohmann::json stateToJson(const Graph& graph, int version, double baselineServedPercent) {
+    nlohmann::json state = stateToJson(graph);
+    state["version"] = version;
+    state["summary"]["baselineServedPercent"] = baselineServedPercent;
+    return state;
+}
+
 nlohmann::json impactToJson(const ImpactReport& impact) {
     nlohmann::json exposedNodes = nlohmann::json::array();
     nlohmann::json exposedEdges = nlohmann::json::array();

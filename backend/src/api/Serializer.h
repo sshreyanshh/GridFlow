@@ -54,6 +54,7 @@ nlohmann::json toJson(const Graph& graph);
 // O(V + E): serializes dynamic node/edge state and its aggregate summary.
 // Graph has no version or baseline metadata; those contract fields use 0 and 100%.
 nlohmann::json stateToJson(const Graph& graph);
+nlohmann::json stateToJson(const Graph& graph, int version, double baselineServedPercent);
 
 // O(V + E + S): serializes exposure lists, components, and sorted shortages.
 nlohmann::json impactToJson(const ImpactReport& impact);
