@@ -1,140 +1,371 @@
 # GridFlow
 
-GridFlow is a prototype energy-supply network resilience dashboard. It visualizes a directed network, lets users apply infrastructure disruptions or run scenarios, and presents service impacts, shortages, recovery paths, routes, events, and critical-node analysis.
+**Modelling, Analysing and Optimizing Energy Distribution Networks**
 
-This README is an AI handoff: use it as orientation, then verify behavior in the source files named below. The repository is evolving; the draft contract and backend specification describe intended behavior and are not proof that the C++ backend implements it.
+GridFlow is a graph-based simulation system that models a regional energy supply network and studies how it behaves when parts of it fail. Facilities are vertices of a directed, capacity-constrained graph, and supply routes are edges. A user can disrupt the network, see which facilities are affected, find structurally critical infrastructure, explore alternative routes, and review how supply is redistributed.
 
-## Project status and grounding
+The project is a Data Structures and Algorithms (DSA) lab project. The core data structures (hash table, min-heap, queue, linked list, graph) and graph algorithms (BFS, connected components, articulation points) are implemented from scratch in C++17, with a React and Cytoscape.js dashboard for visualization.
 
-- The frontend is a React 18 + Vite single-page app. It defaults to a local in-memory mock API.
-- The mock simulator implements the interactive prototype behavior; it is a simple greedy path allocator, not a globally optimal network-flow solver.
-- The C++17 backend is at the initial scaffold stage. `backend/src/main.cpp` currently serves only `GET /api/health`; the other endpoints are specified but not implemented there.
-- `contracts/api-contract.md` is **v0.1 draft**. It is the intended frontend/backend interface, not a description of fully working server endpoints.
-- `backend/BACKEND_SPEC.md` is the backend design and milestone plan. It marks B0 as done and later milestones as incomplete.
-- The baseline network and scenarios currently used by the mock are in `contracts/examples/`. `data/` currently contains only `.gitkeep`; do not assume `data/network.json` exists.
-- Names and approximate positions on the India map are illustrative. The 40 simulated links are not verified real-world routes or infrastructure.
-- If code, this README, and a specification disagree, report the discrepancy and follow the relevant source of truth for the requested change. Do not silently invent missing behavior.
+> **Status at a glance.** The C++ backend is a tested data-structure and algorithm library with a health-check HTTP endpoint. The dashboard is complete and runs against an in-browser JavaScript simulation engine (mock API) by default. The full HTTP integration between the two is defined by an API contract but is not implemented in the backend yet. See [Project Status](#3-project-status) for the exact breakdown.
 
-## Repository map
+---
 
-```text
-GridFlow/
-├── README.md                         # Project and AI handoff guide
-├── backend/
-│   ├── BACKEND_SPEC.md               # C++ design, DSA constraints, roadmap
-│   ├── CMakeLists.txt                # C++17 server and test targets
-│   ├── src/main.cpp                  # Current HTTP server scaffold (/api/health only)
-│   ├── tests/                        # Current smoke tests
-│   └── third_party/                  # Vendored httplib, nlohmann/json, doctest
-├── contracts/
-│   ├── api-contract.md               # Draft v0.1 API/data contract
-│   └── examples/
-│       ├── network.json              # Mock baseline graph (22 nodes, 40 directed edges)
-│       ├── scenarios.json            # Five sample disruption scenarios
-│       ├── state.baseline.json       # Baseline state example
-│       ├── disruption-response.example.json
-│       └── error.example.json
-├── data/                             # Reserved for runtime/backend data; currently empty
-├── docs/                             # Reserved for documentation; currently empty
-├── scripts/fetch_deps.sh             # Dependency helper
-└── frontend/
-    ├── package.json                  # npm scripts and dependencies
-    ├── vite.config.js                # Vite config and /api dev proxy
-    ├── .env.example                  # Frontend environment options
-    ├── CONTRACT_QUESTIONS.md         # Open API/mock assumptions
-    └── src/
-        ├── api/                      # API selector, real/mock clients, errors
-        ├── components/NetworkGraph.jsx
-        ├── hooks/SimulationContext.jsx
-        ├── mocks/                    # In-memory simulator and unit tests
-        ├── pages/Dashboard.jsx        # Dashboard and tabs
-        └── styles/                   # Theme variables and dashboard CSS
+## Table of Contents
+
+1. [Overview](#1-overview)
+2. [Features](#2-features)
+3. [Project Status](#3-project-status)
+4. [System Architecture](#4-system-architecture)
+5. [Data Structures and Algorithms](#5-data-structures-and-algorithms)
+6. [The Network Model](#6-the-network-model)
+7. [API Contract](#7-api-contract)
+8. [Repository Structure](#8-repository-structure)
+9. [Getting Started](#9-getting-started)
+10. [Testing](#10-testing)
+11. [Limitations](#11-limitations)
+12. [Future Work](#12-future-work)
+13. [Academic Context and Team](#13-academic-context-and-team)
+14. [References](#14-references)
+15. [License](#15-license)
+
+---
+
+## 1. Overview
+
+Energy distribution networks are chains of dependent facilities: production, import, processing, distribution, power generation and finally demand. The failure of one component can ripple through everything downstream. GridFlow represents this dependency structure as a graph and uses graph algorithms to answer practical questions:
+
+- Which facilities and routes are exposed when a given facility or route fails?
+- Which facilities are structural single points of failure?
+- Which demand centres lose supply, and how do priorities decide who is served first?
+- What is the cheapest or fastest route between two facilities?
+
+**Sustainable Development Goals addressed:** SDG 7 (Affordable and Clean Energy) and SDG 9 (Industry, Innovation and Infrastructure).
+
+## 2. Features
+
+**Network visualization**
+- Interactive network drawn on a geographic map of India using Cytoscape.js, with node shapes by facility type and colours by operational status.
+- Zoom to reveal labels and detailed telemetry; click a node or edge to inspect it.
+- Light and dark themes.
+
+**Disruption simulation** (four disruption types and five preset scenarios)
+
+| Disruption | Effect |
+|---|---|
+| Node outage | A facility fails completely |
+| Edge disruption | A route loses part (reduced) or all (failed) of its capacity |
+| Supply reduction | A source or import terminal supplies less |
+| Demand surge | A demand centre needs more energy |
+
+Preset scenarios: Cyclone on Western Coast, Central Hub Fire, Import Restrictions, Heatwave Demand Surge, Cascading Failure.
+
+**Analysis dashboard** (tabs): Summary, Shortages, Recovery, Critical Nodes, Route Finder, Event Log.
+
+- **Summary:** supply, demand, served energy and unmet demand.
+- **Shortages:** affected demand centres ordered by priority, then size of shortage.
+- **Recovery:** reallocated supply paths with flow, cost and time, unresolved shortages, and recommendations.
+- **Critical Nodes:** articulation points and an impact-based ranking.
+- **Route Finder:** cheapest or fastest route between two facilities.
+- **Event Log:** an append-only history of the simulation.
+
+## 3. Project Status
+
+| Component | State |
+|---|---|
+| Custom data structures in C++ (HashTable, MinHeap, Queue, LinkedList, Graph) | Implemented and unit-tested |
+| BFS downstream impact analysis, connected components, articulation points (C++) | Implemented and unit-tested |
+| Disruption engine, impact analyzer, event log, JSON serializer (C++) | Implemented and unit-tested; serializer output is checked against the contract examples |
+| C++ HTTP server | Health-check endpoint only (`GET /api/health`) |
+| Route search (Dijkstra) and priority-based supply allocation | Implemented in the **frontend** mock simulation engine (JavaScript) |
+| React dashboard | Complete; runs on the mock API by default |
+| Backend to frontend integration through the HTTP API | Defined in the contract; the remaining endpoints are not yet served by the C++ backend |
+
+The dashboard therefore demonstrates the full user experience on a mock engine, while the C++ library demonstrates the data structures and graph algorithms that the integrated system is built on.
+
+## 4. System Architecture
+
+```
+          ┌──────────────────────────────────────────────┐
+          │  Frontend  (React 18, Vite, Cytoscape.js)    │
+          │  Dashboard · Network map · Analysis tabs     │
+          └───────────────┬──────────────────────────────┘
+                          │  api/client.js chooses one implementation:
+            ┌─────────────┴─────────────┐
+            │ mockApi.js  (default)     │  realApi.js  (VITE_USE_MOCKS=false)
+            │ JS simulation engine      │  fetch('/api/...') via Vite proxy
+            └───────────────────────────┘              │
+                                                       ▼   JSON over HTTP (contract v0.1)
+          ┌──────────────────────────────────────────────┐
+          │  Backend  (C++17)                            │
+          │  api/   Serializer · health endpoint         │
+          │  sim/   DisruptionEngine · DisruptionQueue   │
+          │         ImpactAnalyzer · EventLog            │
+          │  algo/  Traversal (BFS, components)          │
+          │         ArticulationPoints                   │
+          │  core/  Graph      model/  Facility, Route   │
+          │  ds/    HashTable · MinHeap · Queue · List   │
+          └──────────────────────────────────────────────┘
 ```
 
-## Frontend behavior
+Layers only call downwards: the API layer uses the simulation layer, which uses the algorithms, which use the graph and data structures. The graph addresses everything by integer index rather than by pointer, which keeps copies of the graph safe and independent.
 
-The dashboard uses shared simulation state from `SimulationContext.jsx`, which loads network, state, scenarios, and events through the API client. `api/client.js` selects the mock unless `VITE_USE_MOCKS` is exactly `false`.
+| Concern | Technology |
+|---|---|
+| Backend language and build | C++17, CMake 3.16 or newer |
+| HTTP server | cpp-httplib 0.15.3 (vendored) |
+| JSON | nlohmann/json 3.11.3 (vendored, used for input and output only) |
+| Backend tests | doctest 2.4.11 (vendored) |
+| Frontend | React 18.3.1, Vite 6.0.5, Cytoscape.js 3.33.1 |
+| Frontend tests | Vitest |
 
-The dashboard currently exposes:
+Third-party headers are committed in `backend/third_party/` and pinned by checksum in `DEPENDENCIES.lock`, so the backend builds offline.
 
-- A graph where nodes and links can be selected; disruptions and status are visualized on the network.
-- Disruption controls and five sample scenarios (`SC01`–`SC05`).
-- Summary and shortages, recovery allocations/recommendations, critical-node analysis, route finder, and event history tabs.
-- Reset to baseline.
+## 5. Data Structures and Algorithms
 
-`frontend/src/mocks/simulate.js` contains the mock’s allocator and analysis helpers. Disruptions on a target replace earlier disruptions on that target. The mock's state is in memory and resets on page reload; mock calls include a short delay, and `?fail=1` simulates an API failure.
+All structures below are implemented in this repository. The standard library is used only for `std::string`, `std::vector` (as raw storage), memory allocation primitives and I/O. The standard associative and priority containers are not used in the backend.
 
-## Visual theme
+### Data structures
 
-The interface is a dense telemetry console with coordinated light and dark palettes. Use the header theme button to switch; the choice is saved in browser storage, and dark mode is the default when no preference has been saved.
+| Structure | Location | Role in the system | Complexity |
+|---|---|---|---|
+| Graph (directed adjacency lists, outgoing and incoming) | `backend/include/gridflow/core/Graph.h` | Stores facilities and routes; validates unique ids, valid endpoints and absence of self-loops | O(V + E) space |
+| Hash table (separate chaining, FNV-1a 64-bit, automatic resizing at load factor 0.75) | `backend/include/gridflow/ds/HashTable.h` | Maps facility and route ids to indices | average O(1) lookup and insert |
+| Min-heap (binary heap, comparator-based) | `backend/include/gridflow/ds/MinHeap.h` | Priority-based retrieval; implemented and tested as a reusable component | O(log n) push and pop |
+| Queue (dynamic circular buffer) | `backend/src/ds/Queue.h` | BFS frontier; FIFO processing of disruption events | O(1) amortized |
+| Singly linked list (head and tail pointers) | `backend/src/ds/LinkedList.h` | Append-only event history | O(1) append |
 
-- Theme tokens and the Tailwind v4 `@theme inline` mapping are in `frontend/src/styles/variables.css`.
-- UI typography uses JetBrains Mono with a monospace fallback. Pink and purple are the primary brand colors; chart tokens distinguish network states.
-- The center panel is a directed Cytoscape network, overlaid on a subdued Survey of India state map. The map is contextual only; links are explicitly illustrative.
-- The dashboard uses a utility header and a full-canvas network topology workspace. Collapsible simulation-control and telemetry drawers sit beside the map in a horizontal flex layout, pushing and resizing it as they open; the graph is re-fitted after drawer transitions. On narrow screens the drawers open one at a time; telemetry views use icon-and-label navigation and structured tables.
-- Network nodes use semantic zoom: the overview stays compact, while zooming in reveals labels; hovering or selecting a node focuses its connected neighborhood. The map HUD provides zoom, fit-to-network, live zoom percentage, and a dismissible onboarding hint.
-- Keep button hover, active, focus, and disabled states explicit; avoid neon or bloom effects. Respect `prefers-reduced-motion` when changing the UI.
+### Algorithms
 
-## Data and API
+| Algorithm | Location | Application | Complexity |
+|---|---|---|---|
+| Breadth-first search | `backend/src/algo/Traversal.cpp` | Identifies facilities and routes downstream of a disruption, skipping failed components | O(V + E) |
+| Connected components (iterative DFS over the undirected operational graph) | `backend/src/algo/Traversal.cpp` | Detects demand centres cut off from every supply facility | O(V + E) |
+| Articulation points (DFS discovery times and low-link values, Tarjan) | `backend/src/algo/ArticulationPoints.cpp` | Finds structurally critical facilities; run on the undirected view of the operational network | O(V + E) |
+| Dijkstra shortest path (linear-scan minimum selection) | `frontend/src/mocks/simulate.js` | Cheapest or fastest route; also used inside allocation | O(V²) selection plus edge scans |
+| Greedy priority-based allocation | `frontend/src/mocks/simulate.js` | Serves demand centres in priority order along the cheapest feasible paths, respecting edge, node and supply capacities | repeated shortest-path searches |
 
-The reference graph represents one abstract energy commodity. Units in the draft contract are EU/day, cost-units per EU, and hours. Edges are directed. The sample graph has 22 nodes and 40 links, and the draft data totals 2,600 supply and 2,000 demand.
+Two points worth noting:
 
-The intended API is documented in `contracts/api-contract.md`. It defines `/api/health`, `/api/network`, `/api/state`, `/api/disruptions`, `/api/scenarios`, `/api/scenarios/{id}/run`, `/api/analysis/critical-nodes`, `/api/routes`, `/api/events`, and `/api/reset`. The dev server proxies `/api` to `http://127.0.0.1:8080`. The real frontend client expects JSON responses, typically wrapped in `{ "ok": true, "data": ... }`.
+- **Articulation points are defined for undirected graphs**, while energy flows in one direction. GridFlow therefore reports structural weak points (articulation points) and a separate flow-based ranking that fails each facility in turn and measures the resulting unmet demand.
+- **The allocation is a greedy heuristic.** It serves critical demand first and always takes the cheapest remaining path. It never cancels earlier flow, so the result is not guaranteed to be globally optimal.
 
-**Important:** these are contract endpoints. Only `/api/health` is currently registered by `backend/src/main.cpp`. Selecting the real API mode before implementing the remaining server endpoints will not provide a functioning full dashboard.
+## 6. The Network Model
 
-The API contract is the shared boundary for frontend/backend work. It calls for camelCase JSON fields, string IDs, a single shared in-memory simulation, and a version increment on successful mutations. It is explicitly draft; see `frontend/CONTRACT_QUESTIONS.md` for assumptions and unresolved details. Contract changes should be coordinated and the contract version/changelog updated.
+The bundled dataset (`contracts/examples/network.json`) is an illustrative network of **22 facilities and 40 directed routes**, with a total supply of 2600 and a total demand of 2000 energy units per day. It uses India-inspired facility names but is **not real operational data**.
 
-## Backend design constraints
+| Layer | Facility type | Count |
+|---|---|---|
+| 1 | Source | 3 |
+| 1 | Import terminal | 3 |
+| 2 | Processing | 4 |
+| 3 | Distribution hub | 4 |
+| 4 | Power plant | 3 |
+| 5 | Demand centre | 5 |
 
-The intended backend is C++17. Its architecture and DSA requirements are detailed in `backend/BACKEND_SPEC.md`; read that file before implementing backend logic. In particular:
+Every facility has a throughput **capacity**. Sources and import terminals have a **supply**. Demand centres have a **demand** and a **priority** (1 is critical, 3 is lowest). Every route has a **capacity**, a **cost** per unit and a **transit time**. A single abstract commodity (energy units per day) is modelled.
 
-- The evaluated data structures and algorithms should be implemented by the project, not replaced with the forbidden STL containers listed in the spec (`std::map`, `std::unordered_map`, `std::queue`, `std::priority_queue`, and others).
-- Prefer IDs and indices rather than raw pointers between graph objects.
-- The allocation strategy is specified as a greedy successive-cheapest-path heuristic, not min-cost max-flow.
-- Build flags in the CMake setup include `-Wall -Wextra -Wpedantic`; backend spec milestones also call for tests and memory-safety validation.
+**Operational states**
 
-Do not implement planned classes or endpoints as though they already exist. Check the current files and milestone checklist before extending the backend.
+| Element | States |
+|---|---|
+| Facility | Active, Degraded, Failed |
+| Route | Active, Reduced, Failed |
 
-## Setup and commands
+Disruptions are validated (existence of the target, suitability of the target type, severity between 0 and 1) and a later disruption on the same target replaces the earlier one instead of compounding.
 
-Frontend, from the repository root:
+## 7. API Contract
 
-```sh
+The full specification is in [`contracts/api-contract.md`](contracts/api-contract.md). Every response uses a common envelope:
+
+```json
+{ "ok": true,  "data": { } }
+{ "ok": false, "error": { "code": "NODE_NOT_FOUND", "message": "...", "details": { } } }
+```
+
+| Endpoint | Purpose | C++ server | Frontend mock |
+|---|---|---|---|
+| `GET /api/health` | Service check | Yes | Yes |
+| `GET /api/network` | Static network structure | Contract and serializer only | Yes |
+| `GET /api/state` | Current statuses, flows, summary | Contract and serializer only | Yes |
+| `POST /api/disruptions` | Apply a disruption, return impact, recovery and state | Contract and serializer only | Yes |
+| `GET /api/scenarios`, `POST /api/scenarios/{id}/run` | List and run presets | Contract only | Yes |
+| `GET /api/analysis/critical-nodes` | Articulation points and criticality ranking | Contract only | Yes |
+| `GET /api/routes?from=&to=&metric=` | Cheapest or fastest route | Contract and serializer only | Yes |
+| `GET /api/events` | Event log | Contract and serializer only | Yes |
+| `POST /api/reset` | Restore the baseline | Contract only | Yes |
+
+The C++ `Serializer` produces the contract's JSON shapes, and its unit tests compare the output with the reference payloads in [`contracts/examples/`](contracts/examples/).
+
+## 8. Repository Structure
+
+```
+GridFlow/
+├── backend/
+│   ├── CMakeLists.txt
+│   ├── BACKEND_SPEC.md                 backend technical specification
+│   ├── include/gridflow/
+│   │   ├── core/Graph.h                directed graph, adjacency lists
+│   │   ├── ds/HashTable.h, MinHeap.h   custom data structures
+│   │   └── model/                      Types, Facility, Route, Disruption
+│   ├── src/
+│   │   ├── core/Graph.cpp
+│   │   ├── model/Types.cpp
+│   │   ├── ds/Queue.h, LinkedList.h    custom data structures
+│   │   ├── algo/                       Traversal (BFS, components), ArticulationPoints
+│   │   ├── sim/                        DisruptionEngine, DisruptionQueue,
+│   │   │                               ImpactAnalyzer, EventLog
+│   │   ├── api/Serializer.*            struct to JSON conversion
+│   │   └── main.cpp                    HTTP server (health endpoint)
+│   ├── tests/                          doctest unit tests, one file per module
+│   └── third_party/                    cpp-httplib, nlohmann/json, doctest, DEPENDENCIES.lock
+├── frontend/
+│   ├── package.json, vite.config.js
+│   └── src/
+│       ├── api/                        client.js, realApi.js, mockApi.js, errors.js
+│       ├── mocks/                      simulate.js (mock simulation engine) and its tests
+│       ├── hooks/                      SimulationContext.jsx (shared state and actions)
+│       ├── components/NetworkGraph.jsx Cytoscape map visualization
+│       ├── pages/Dashboard.jsx
+│       └── styles/
+├── contracts/
+│   ├── api-contract.md                 API specification (v0.1)
+│   └── examples/                       reference JSON payloads and the sample network
+├── data/
+├── docs/
+└── scripts/fetch_deps.sh               re-downloads and verifies the pinned dependencies
+```
+
+## 9. Getting Started
+
+### Prerequisites
+
+| Tool | Version |
+|---|---|
+| C++ compiler | GCC or Clang with C++17 support |
+| CMake | 3.16 or newer |
+| Node.js and npm | Node 18 or newer (required by Vite 6) |
+| Git | any recent version |
+
+The project was developed on Linux. macOS and Windows (for example through WSL2) are expected to work with the same tools but have not been verified.
+
+### Clone
+
+```bash
+git clone https://github.com/sshreyanshh/GridFlow.git
+cd GridFlow
+```
+
+### Backend
+
+```bash
+cmake -S backend -B backend/build -DCMAKE_BUILD_TYPE=Debug
+cmake --build backend/build -j
+
+./backend/build/gridflow_tests        # run all unit tests
+./backend/build/gridflow_server       # health endpoint on http://127.0.0.1:8080/api/health
+```
+
+Check that the server is up:
+
+```bash
+curl http://127.0.0.1:8080/api/health
+```
+
+To build with AddressSanitizer and UndefinedBehaviorSanitizer:
+
+```bash
+cmake -S backend -B backend/build-asan -DCMAKE_BUILD_TYPE=Debug -DGRIDFLOW_ENABLE_SANITIZERS=ON
+cmake --build backend/build-asan -j
+./backend/build-asan/gridflow_tests
+```
+
+To re-download the pinned third-party headers and verify their SHA-256 checksums: `./scripts/fetch_deps.sh`.
+
+### Frontend
+
+```bash
 cd frontend
 npm install
-npm run dev
+npm run dev                            # http://localhost:5173
 ```
 
-Frontend scripts (run from `frontend/`):
+The dashboard starts in **mock mode** and needs no backend. The top bar shows which data source is active. Other scripts:
 
-```sh
-npm run build
-npm run lint
-npm test
-```
+| Script | Purpose |
+|---|---|
+| `npm run build` | Production build |
+| `npm run lint` | ESLint |
+| `npm test` | Unit tests for the mock simulation engine (Vitest) |
 
-The frontend runs in mock mode by default (`frontend/.env.development` and `.env.example` set `VITE_USE_MOCKS=true`). Set `VITE_USE_MOCKS=false` to use the HTTP client; `VITE_API_BASE` defaults to `/api`. In development, Vite forwards `/api` to `127.0.0.1:8080`.
+**Mock and live mode.** The data source is chosen at start-up by the environment variable `VITE_USE_MOCKS`. Any value other than `false` selects the mock engine. Setting `VITE_USE_MOCKS=false` makes the dashboard call the real API through the Vite proxy (`/api` is forwarded to `http://127.0.0.1:8080`). This mode needs a backend that serves the full contract. In mock mode, appending `?fail=1` to the page URL makes every request fail, which is useful for checking the error handling.
 
-The backend uses CMake and a C++17 compiler. Configure/build/test from the repository root with:
+### Troubleshooting
 
-```sh
-cmake -S backend -B backend/build
-cmake --build backend/build
-ctest --test-dir backend/build --output-on-failure
-```
+| Problem | Fix |
+|---|---|
+| `npm run dev` does nothing or `vite: not found` | Run `npm install` inside `frontend/` first |
+| Frontend files missing after cloning | Check out the branch that contains the frontend (`git branch -a`) |
+| Port 8080 or 5173 already in use | Stop the other process (`ss -ltnp \| grep 8080`) or change the port |
+| New source files are not compiled | Re-run the `cmake -S backend -B backend/build` command; CMake re-scans `src/` and `tests/` |
 
-The server listens on `127.0.0.1:8080`. Its currently implemented route is only `/api/health`.
+## 10. Testing
 
-## Guidance for AI assistants
+| Suite | Command | Coverage |
+|---|---|---|
+| Backend (doctest) | `./backend/build/gridflow_tests` | 93 test cases across the data structures, graph, traversal, articulation points, disruption engine, impact analyzer, event log and serializer |
+| Frontend (Vitest) | `cd frontend && npm test` | 4 tests for the mock simulation engine |
 
-When helping with this repository:
+The backend tests cover empty, single-element, typical, boundary and failure cases, including rehashing, hash collisions, queue growth, memory ownership of copied containers, and validation failures. Tests that depend on reference data read the files in `contracts/examples/`.
 
-1. Inspect the relevant source and tests before proposing or editing behavior. Do not infer implementation from a filename, contract example, or roadmap.
-2. Clearly distinguish **implemented**, **mock-only**, **specified/planned**, and **unknown** behavior. Never claim that a draft API endpoint works on the backend unless its route is present and tested.
-3. Keep the frontend in React/JSX and follow its existing API, context, component, and CSS patterns. Preserve mock mode and API contract compatibility unless the task explicitly changes them.
-4. For API work, consult `contracts/api-contract.md` and `frontend/CONTRACT_QUESTIONS.md`; flag ambiguous or conflicting requirements instead of silently choosing a behavior.
-5. For backend algorithms or data structures, follow `backend/BACKEND_SPEC.md`, including its custom-DSA constraints and milestone order.
-6. Preserve the dark control-room design and the distinction between normal, degraded, failed, exposed, and highlighted visual states.
-7. Treat all sample facilities, positions, and links as illustrative simulation data, not verified infrastructure facts.
-8. Make focused changes, add or update targeted tests, and report exactly what was changed and which checks were run.
+## 11. Limitations
+
+- The C++ backend does not yet serve the complete API. Route search and supply allocation currently exist only in the frontend mock engine.
+- The model is a **steady-state snapshot** after each disruption, not a time-stepped simulation.
+- A **single abstract commodity** is modelled. Oil, gas and electricity are not distinguished.
+- The allocation is a **greedy heuristic** and is not guaranteed to be optimal.
+- The dataset is **illustrative** and not based on real operational data.
+- There is no persistence, authentication or multi-user support. Application state is held in memory.
+
+## 12. Future Work
+
+- Implement Dijkstra's algorithm and the priority-based allocation in C++ using the existing MinHeap, and serve the full API contract so the dashboard runs against the real backend.
+- Replace the greedy allocation with a minimum-cost maximum-flow algorithm (for example successive shortest path) for globally optimal redistribution.
+- Add further criticality metrics.
+- Support real, publicly available energy network datasets.
+- Support comparison of multiple disruption scenarios.
+- Improve performance and recovery planning for larger networks.
+
+## 13. Academic Context and Team
+
+**Institution:** Jaypee Institute of Information Technology, Noida
+**Department:** Computer Science and Engineering and Information Technology
+**Programme:** Bachelor of Technology, Third Semester (2026-2027)
+**Course:** Data Structures Lab (15B17CI371)
+**Submitted to:** Dr. Ankita Wadhwa, Dr. Potukuchi Raghu Vamsi
+
+| Name | Enrollment number | Batch |
+|---|---|---|
+| Shreyansh Srivastava | 2501030069 | B11 |
+| Abhigya Narayan Awasthi | 2501030085 | B11 |
+
+**Contributions**
+
+| Area | Owner |
+|---|---|
+| Graph, HashTable, MinHeap, model types, project build setup | Shreyansh Srivastava |
+| Queue, LinkedList, BFS, connected components, articulation points, disruption engine, event log, impact analyzer, serializer | Abhigya Narayan Awasthi |
+| Frontend dashboard and API contract | Joint |
+
+## 14. References
+
+1. T. H. Cormen, C. E. Leiserson, R. L. Rivest and C. Stein, *Introduction to Algorithms*, 4th Edition, MIT Press, 2022.
+2. R. Sedgewick and K. Wayne, *Algorithms*, 4th Edition, Addison-Wesley, 2011.
+3. React documentation: https://react.dev/
+4. Vite documentation: https://vite.dev/guide/
+5. Cytoscape.js documentation: https://js.cytoscape.org/
+6. C++ reference: https://en.cppreference.com/
+7. CMake documentation: https://cmake.org/documentation/
+
+## 15. License
+
+This repository was created for academic coursework. No open-source licence has been specified.
