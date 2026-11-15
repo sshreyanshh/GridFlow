@@ -165,15 +165,15 @@ For each non-demand node: temporarily mark it `FAILED` on a scratch copy, re-run
 ## 12. Progress tracker
 
 - [x] B0 toolchain
-- [ ] B1 Queue, LinkedList
-- [ ] B2 HashTable
-- [ ] B3 MinHeap
-- [ ] B4 Graph + loader
-- [ ] B5 walking skeleton
-- [ ] B6 traversal + Dijkstra + routes
-- [ ] B7 allocation
-- [ ] B8 disruptions + events + reset
-- [ ] B9 scenarios
-- [ ] B10 critical analysis
-- [ ] B11 hardening
-- [ ] B12 docs
+- [x] B1 Queue, LinkedList
+- [x] B2 HashTable
+- [x] B3 MinHeap
+- [x] B4 Graph + loader
+- [x] B5 walking skeleton
+- [x] B6 traversal + Dijkstra + routes
+- [x] B7 allocation
+- [x] B8 disruptions + events + reset
+- [x] B9 scenarios
+- [x] B10 critical analysis
+- [x] B11 hardening
+- [x] B12 docs
