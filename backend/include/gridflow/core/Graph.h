@@ -3,28 +3,33 @@
 //
 // Storage layout (everything is addressed by integer INDEX, never by pointer):
 //
-//   nodes_[i]   -> the i-th Facility
-//   edges_[e]   -> the e-th Route (it knows its own `from` and `to` indices)
-//   out_[i]     -> indices of the routes that LEAVE node i
-//   in_[i]      -> indices of the routes that ENTER node i
+//   nodes_[i]     -> the i-th Facility
+//   edges_[e]     -> the e-th Route (it knows its own `from` and `to` indices)
+//   out_[i]       -> indices of the routes that LEAVE node i
+//   in_[i]        -> indices of the routes that ENTER node i
+//   nodeIndex_    -> HashTable: facility id -> index in nodes_
+//   edgeIndex_    -> HashTable: route id    -> index in edges_
 //
 // Invariants the class guarantees (a Graph can never be built in a broken state):
 //   1. Every facility id is non-empty and unique.
 //   2. Every route id is non-empty and unique.
 //   3. Every route's `from` and `to` refer to existing nodes, and from != to.
 //   4. out_ and in_ always match edges_ exactly.
+//   5. nodeIndex_ and edgeIndex_ always match nodes_ and edges_ exactly.
 //
-// Copying: all members are std::vector of plain values, so the compiler-generated
-// copy constructor and assignment already produce a fully independent deep copy.
+// Copying: every member is either a std::vector of plain values or our own
+// HashTable (which has a correct deep copy), so the compiler-generated copy
+// constructor and assignment give a fully independent deep copy.
 // (This is the "rule of zero": no hand-written destructor or copy code needed.)
 // The criticality ranking and Simulation::reset() rely on this.
 //
-// Complexity note: findNode/findEdge are currently a linear scan, O(n). They will
-// be replaced by our own HashTable (average O(1)); the public interface will not change.
+// Complexity: findNode / findEdge are O(1) on average (hash lookup).
+// addFacility / addRoute are O(1) on average (amortised).
 
 #include <string>
 #include <vector>
 
+#include "gridflow/ds/HashTable.h"
 #include "gridflow/model/Facility.h"
 #include "gridflow/model/Route.h"
 
@@ -70,6 +75,8 @@ private:
     std::vector<Route> edges_;
     std::vector<std::vector<int>> out_;
     std::vector<std::vector<int>> in_;
+    HashTable<std::string, int> nodeIndex_;
+    HashTable<std::string, int> edgeIndex_;
 };
 
 }  // namespace gridflow

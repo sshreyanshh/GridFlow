@@ -150,3 +150,27 @@ TEST_CASE("Graph: handles a larger chain") {
     CHECK(g.inEdges(0).empty());
     CHECK(g.inEdges(n - 1).size() == 1);
 }
+
+TEST_CASE("Graph: id lookup stays correct and independent after copying") {
+    Triangle t;
+    Graph copy = t.g;
+    CHECK(copy.findNode("B") == t.b);
+    CHECK(copy.findEdge("E2") == 2);
+
+    const int d = copy.addFacility(makeNode("D"));
+    CHECK(copy.findNode("D") == d);
+    CHECK(t.g.findNode("D") == -1);  // the original's index table is untouched
+    CHECK_THROWS_AS(copy.addFacility(makeNode("A")), std::invalid_argument);
+}
+
+TEST_CASE("Graph: lookups stay correct while the index tables grow and rehash") {
+    Graph g;
+    const int n = 2000;
+    for (int i = 0; i < n; ++i) g.addFacility(makeNode("N" + std::to_string(i)));
+    for (int i = 0; i + 1 < n; ++i) g.addRoute(makeRoute("R" + std::to_string(i), i, i + 1));
+
+    for (int i = 0; i < n; ++i) CHECK(g.findNode("N" + std::to_string(i)) == i);
+    for (int i = 0; i + 1 < n; ++i) CHECK(g.findEdge("R" + std::to_string(i)) == i);
+    CHECK(g.findNode("N2000") == -1);
+    CHECK(g.findEdge("R1999") == -1);
+}
