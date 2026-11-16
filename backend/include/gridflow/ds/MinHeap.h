@@ -1,38 +1,4 @@
 #pragma once
-// MinHeap<T, Compare>: a binary heap (priority queue) stored in a std::vector.
-//
-// Convention: Compare(a, b) returns true when `a` must come out BEFORE `b`.
-//   * Default Compare is std::less<T>, so the SMALLEST element is on top.
-//   * Pass std::greater<T> to get a max-heap.
-//   * For structs, write a comparator that orders by whatever matters first and
-//     breaks ties explicitly (see "Determinism" below).
-//
-// The heap is a complete binary tree laid out in an array, level by level:
-//
-//         index:   0
-//                 / \   <- the two children of index 0
-//                1   2          parent(i) = (i - 1) / 2
-//               / \ / \         left(i)   = 2i + 1
-//              3  4 5  6        right(i)  = 2i + 2
-//
-// Heap property: no element comes out after one of its children, so the top (index 0)
-// is always the next element to leave.
-//
-//   push:  append at the end, then SIFT UP  (swap with the parent while it beats it)
-//   pop:   move the last element to the root, then SIFT DOWN (swap with the better child)
-//   top:   data_[0]
-//
-// Complexity: push O(log n), pop O(log n), top O(1), size/empty O(1).
-//
-// There is no decrease-key. Dijkstra uses LAZY DELETION instead: push a new, better
-// entry and skip stale ones when they are popped.
-//
-// Determinism: a heap is NOT stable, so entries that compare "equal" may leave in any
-// order. Where the output must be reproducible (Dijkstra, shortage ordering), include a
-// final tie-breaker such as the node index inside the comparator.
-//
-// Copying: the only member that owns memory is a std::vector, so the compiler-generated
-// copy is a correct deep copy (rule of zero).
 
 #include <cstddef>
 #include <functional>

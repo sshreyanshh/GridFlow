@@ -209,7 +209,7 @@ start_frontend() {  # start_frontend <true|false>   (true = mock data, false = r
         echo "    node_modules missing, running npm install"
         npm install
     fi
-    VITE_USE_MOCKS="$use_mocks" setsid npm run dev -- --host 127.0.0.1 --port "$FRONTEND_PORT" \
+    VITE_USE_MOCKS="$use_mocks" setsid npm run dev:vite -- --host 127.0.0.1 --port "$FRONTEND_PORT" \
         --strictPort >"$log" 2>&1 &
     local pid=$!
     PIDS+=("$pid")

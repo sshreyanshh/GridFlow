@@ -7,7 +7,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(Threads REQUIRED)
 
 # Wave 1–5 source and test files are registered by these CONFIGURE_DEPENDS globs.
-# Every .cpp under src/ except the two entry points is library code shared by apps and tests.
+# Every .cpp under src/ except main.cpp is "library" code shared by server and tests.
 file(GLOB_RECURSE GF_LIB_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 list(FILTER GF_LIB_SOURCES EXCLUDE REGEX "/(main|terminal_main)\\.cpp$")
 

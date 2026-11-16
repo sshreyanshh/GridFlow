@@ -262,11 +262,8 @@ cmake -S backend -B backend/build -DCMAKE_BUILD_TYPE=Debug
 cmake --build backend/build -j
 
 ./backend/build/gridflow_tests        # run all unit tests
-./backend/build/gridflow_server       # health endpoint on http://127.0.0.1:8080/api/health
-./backend/build/gridflow_terminal     # interactive terminal demo
+./backend/build/gridflow_server       # API on http://127.0.0.1:8080
 ```
-
-To launch the demo chooser, run `./scripts/demo.sh` and select **Frontend dashboard** or **Terminal demo**. You can start the terminal directly with `./scripts/demo.sh --terminal`. It uses the same C++ simulation and offers a network overview, preset disruption scenarios, Dijkstra route search, critical-facility analysis, and reset.
 
 Check that the server is up:
 
@@ -292,7 +289,7 @@ npm install
 npm run dev                            # http://localhost:5173
 ```
 
-The dashboard starts in **live API mode** and expects the C++ backend at `http://127.0.0.1:8080`. The top bar shows which data source is active. Set `VITE_USE_MOCKS=true` to use the in-browser simulation engine instead. Other scripts:
+`npm run dev` builds and starts the C++ API and frontend together. Stop both with Ctrl+C. To run Vite alone, use `npm run dev:vite`; that requires the backend to already be running at `http://127.0.0.1:8080`. The top bar shows which data source is active. Set `VITE_USE_MOCKS=true` to use the in-browser simulation engine instead. Other scripts:
 
 | Script | Purpose |
 |---|---|
@@ -307,6 +304,7 @@ The dashboard starts in **live API mode** and expects the C++ backend at `http:/
 | Problem | Fix |
 |---|---|
 | `npm run dev` does nothing or `vite: not found` | Run `npm install` inside `frontend/` first |
+| Vite logs `http proxy error` / `ECONNREFUSED 127.0.0.1:8080` | Start with `npm run dev` (it starts both services), or start `./backend/build/gridflow_server --data-dir data` in another terminal before `npm run dev:vite` |
 | Frontend files missing after cloning | Check out the branch that contains the frontend (`git branch -a`) |
 | Port 8080 or 5173 already in use | Stop the other process (`ss -ltnp \| grep 8080`) or change the port |
 | New source files are not compiled | Re-run the `cmake -S backend -B backend/build` command; CMake re-scans `src/` and `tests/` |

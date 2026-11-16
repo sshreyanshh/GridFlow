@@ -1,34 +1,4 @@
 #pragma once
-// HashTable<K, V, Hash>: our own hash table using SEPARATE CHAINING.
-//
-//   buckets_ (a vector of pointers)
-//   [0] -> null
-//   [1] -> (key,value) -> (key,value) -> null      <- a "chain": entries whose hash
-//   [2] -> null                                       landed in the same bucket
-//   [3] -> (key,value) -> null
-//   ...
-//
-// How it works
-//   * index = hash(key) % bucketCount picks the bucket for a key.
-//   * Different keys can land in the same bucket (a COLLISION); they simply
-//     share that bucket's linked chain.
-//   * When the table gets too full (load factor = size / bucketCount > 0.75) it
-//     doubles the bucket count and relinks every node (REHASH), which keeps the
-//     chains short and operations O(1) on average.
-//
-// Complexity: put / get / contains / remove are O(1) on average, O(n) worst case
-// (every key in one chain). Rehash is O(n) but happens rarely (amortised O(1)).
-//
-// Memory: every entry is a heap-allocated Node that this class owns. Because the
-// class owns raw memory it follows the "rule of three": destructor, copy
-// constructor and copy assignment are all written by hand.
-//
-// Pointer stability: the pointer returned by get() stays valid until that key is
-// removed or the table is cleared/destroyed. A rehash does NOT invalidate it,
-// because rehash relinks existing nodes instead of reallocating them.
-//
-// Allowed std usage here: std::vector as raw bucket storage, std::string, std::swap.
-
 #include <cstddef>
 #include <cstdint>
 #include <string>
@@ -42,8 +12,6 @@ namespace gridflow {
 template <typename K>
 struct DefaultHash;
 
-// FNV-1a, 64-bit: start from a fixed offset, then for every byte XOR it in and
-// multiply by a fixed prime. Simple, fast and spreads typical ids well.
 template <>
 struct DefaultHash<std::string> {
     std::size_t operator()(const std::string& text) const {
