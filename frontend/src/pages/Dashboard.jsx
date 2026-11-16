@@ -63,7 +63,7 @@ export default function Dashboard() {
   const [controlsOpen, setControlsOpen] = useState(true);
   const [telemetryOpen, setTelemetryOpen] = useState(true);
   const [layoutVersion, setLayoutVersion] = useState(0);
-  const mock = import.meta.env.VITE_USE_MOCKS !== 'false';
+  const mock = import.meta.env.VITE_USE_MOCKS === 'true';
 
   useEffect(() => {
     const theme = darkMode ? 'dark' : 'light';
