@@ -7,9 +7,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(Threads REQUIRED)
 
 # Wave 1–5 source and test files are registered by these CONFIGURE_DEPENDS globs.
-# Every .cpp under src/ except main.cpp is "library" code shared by server and tests.
+# Every .cpp under src/ except the two entry points is library code shared by apps and tests.
 file(GLOB_RECURSE GF_LIB_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-list(FILTER GF_LIB_SOURCES EXCLUDE REGEX "/main\\.cpp$")
+list(FILTER GF_LIB_SOURCES EXCLUDE REGEX "/(main|terminal_main)\\.cpp$")
 
 # Every .cpp under tests/ is a test file.
 file(GLOB_RECURSE GF_TEST_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp)
@@ -20,6 +20,9 @@ target_compile_options(gridflow_settings INTERFACE -Wall -Wextra -Wpedantic)
 
 add_executable(gridflow_server src/main.cpp ${GF_LIB_SOURCES})
 target_link_libraries(gridflow_server PRIVATE gridflow_settings Threads::Threads)
+
+add_executable(gridflow_terminal src/terminal_main.cpp ${GF_LIB_SOURCES})
+target_link_libraries(gridflow_terminal PRIVATE gridflow_settings Threads::Threads)
 
 enable_testing()
 add_executable(gridflow_tests ${GF_TEST_SOURCES} ${GF_LIB_SOURCES})

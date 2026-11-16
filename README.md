@@ -6,7 +6,7 @@ GridFlow is a graph-based simulation system that models a regional energy supply
 
 The project is a Data Structures and Algorithms (DSA) lab project. The core data structures (hash table, min-heap, queue, linked list, graph) and graph algorithms (BFS, connected components, articulation points) are implemented from scratch in C++17, with a React and Cytoscape.js dashboard for visualization.
 
-> **Status at a glance.** The C++ backend is a tested data-structure and algorithm library with a health-check HTTP endpoint. The dashboard is complete and runs against an in-browser JavaScript simulation engine (mock API) by default. The full HTTP integration between the two is defined by an API contract but is not implemented in the backend yet. See [Project Status](#3-project-status) for the exact breakdown.
+> **Status at a glance.** The C++ backend serves the full dashboard API, including graph simulation, disruptions, scenarios, route search, and critical-node analysis. The frontend uses that API by default; an in-browser mock mode remains available for offline demos. See [Project Status](#3-project-status) for the exact breakdown.
 
 ---
 
@@ -75,12 +75,12 @@ Preset scenarios: Cyclone on Western Coast, Central Hub Fire, Import Restriction
 | Custom data structures in C++ (HashTable, MinHeap, Queue, LinkedList, Graph) | Implemented and unit-tested |
 | BFS downstream impact analysis, connected components, articulation points (C++) | Implemented and unit-tested |
 | Disruption engine, impact analyzer, event log, JSON serializer (C++) | Implemented and unit-tested; serializer output is checked against the contract examples |
-| C++ HTTP server | Health-check endpoint only (`GET /api/health`) |
-| Route search (Dijkstra) and priority-based supply allocation | Implemented in the **frontend** mock simulation engine (JavaScript) |
-| React dashboard | Complete; runs on the mock API by default |
-| Backend to frontend integration through the HTTP API | Defined in the contract; the remaining endpoints are not yet served by the C++ backend |
+| C++ HTTP server | Full dashboard API, including health, network, state, disruptions, scenarios, analysis, routes, events and reset |
+| Route search (Dijkstra) and priority-based supply allocation | Implemented in the C++ backend |
+| React dashboard | Uses the C++ API by default; mock mode remains available |
+| Backend to frontend integration through the HTTP API | Implemented through `realApi.js` and the Vite `/api` proxy |
 
-The dashboard therefore demonstrates the full user experience on a mock engine, while the C++ library demonstrates the data structures and graph algorithms that the integrated system is built on.
+The dashboard runs the C++ simulation through the HTTP API, so its displayed network state and analysis come from the backend algorithms.
 
 ## 4. System Architecture
 
@@ -91,13 +91,13 @@ The dashboard therefore demonstrates the full user experience on a mock engine, 
           └───────────────┬──────────────────────────────┘
                           │  api/client.js chooses one implementation:
             ┌─────────────┴─────────────┐
-            │ mockApi.js  (default)     │  realApi.js  (VITE_USE_MOCKS=false)
+            │ mockApi.js  (opt-in)      │  realApi.js  (default)
             │ JS simulation engine      │  fetch('/api/...') via Vite proxy
             └───────────────────────────┘              │
                                                        ▼   JSON over HTTP (contract v0.1)
           ┌──────────────────────────────────────────────┐
           │  Backend  (C++17)                            │
-          │  api/   Serializer · health endpoint         │
+          │  api/   REST routes · Serializer              │
           │  sim/   DisruptionEngine · DisruptionQueue   │
           │         ImpactAnalyzer · EventLog            │
           │  algo/  Traversal (BFS, components)          │
@@ -185,14 +185,14 @@ The full specification is in [`contracts/api-contract.md`](contracts/api-contrac
 | Endpoint | Purpose | C++ server | Frontend mock |
 |---|---|---|---|
 | `GET /api/health` | Service check | Yes | Yes |
-| `GET /api/network` | Static network structure | Contract and serializer only | Yes |
-| `GET /api/state` | Current statuses, flows, summary | Contract and serializer only | Yes |
-| `POST /api/disruptions` | Apply a disruption, return impact, recovery and state | Contract and serializer only | Yes |
-| `GET /api/scenarios`, `POST /api/scenarios/{id}/run` | List and run presets | Contract only | Yes |
-| `GET /api/analysis/critical-nodes` | Articulation points and criticality ranking | Contract only | Yes |
-| `GET /api/routes?from=&to=&metric=` | Cheapest or fastest route | Contract and serializer only | Yes |
-| `GET /api/events` | Event log | Contract and serializer only | Yes |
-| `POST /api/reset` | Restore the baseline | Contract only | Yes |
+| `GET /api/network` | Static network structure | Yes | Yes |
+| `GET /api/state` | Current statuses, flows, summary | Yes | Yes |
+| `POST /api/disruptions` | Apply a disruption, return impact, recovery and state | Yes | Yes |
+| `GET /api/scenarios`, `POST /api/scenarios/{id}/run` | List and run presets | Yes | Yes |
+| `GET /api/analysis/critical-nodes` | Articulation points and criticality ranking | Yes | Yes |
+| `GET /api/routes?from=&to=&metric=` | Cheapest or fastest route | Yes | Yes |
+| `GET /api/events` | Event log | Yes | Yes |
+| `POST /api/reset` | Restore the baseline | Yes | Yes |
 
 The C++ `Serializer` produces the contract's JSON shapes, and its unit tests compare the output with the reference payloads in [`contracts/examples/`](contracts/examples/).
 
@@ -263,7 +263,10 @@ cmake --build backend/build -j
 
 ./backend/build/gridflow_tests        # run all unit tests
 ./backend/build/gridflow_server       # health endpoint on http://127.0.0.1:8080/api/health
+./backend/build/gridflow_terminal     # interactive terminal demo
 ```
+
+To launch the demo chooser, run `./scripts/demo.sh` and select **Frontend dashboard** or **Terminal demo**. You can start the terminal directly with `./scripts/demo.sh --terminal`. It uses the same C++ simulation and offers a network overview, preset disruption scenarios, Dijkstra route search, critical-facility analysis, and reset.
 
 Check that the server is up:
 
@@ -289,7 +292,7 @@ npm install
 npm run dev                            # http://localhost:5173
 ```
 
-The dashboard starts in **mock mode** and needs no backend. The top bar shows which data source is active. Other scripts:
+The dashboard starts in **live API mode** and expects the C++ backend at `http://127.0.0.1:8080`. The top bar shows which data source is active. Set `VITE_USE_MOCKS=true` to use the in-browser simulation engine instead. Other scripts:
 
 | Script | Purpose |
 |---|---|
@@ -297,7 +300,7 @@ The dashboard starts in **mock mode** and needs no backend. The top bar shows wh
 | `npm run lint` | ESLint |
 | `npm test` | Unit tests for the mock simulation engine (Vitest) |
 
-**Mock and live mode.** The data source is chosen at start-up by the environment variable `VITE_USE_MOCKS`. Any value other than `false` selects the mock engine. Setting `VITE_USE_MOCKS=false` makes the dashboard call the real API through the Vite proxy (`/api` is forwarded to `http://127.0.0.1:8080`). This mode needs a backend that serves the full contract. In mock mode, appending `?fail=1` to the page URL makes every request fail, which is useful for checking the error handling.
+**Mock and live mode.** The data source is chosen at start-up by the environment variable `VITE_USE_MOCKS`. The default is the C++ API through the Vite proxy (`/api` is forwarded to `http://127.0.0.1:8080`). Set `VITE_USE_MOCKS=true` to select the in-browser mock engine. In mock mode, appending `?fail=1` to the page URL makes every request fail, which is useful for checking the error handling.
 
 ### Troubleshooting
 
@@ -319,7 +322,6 @@ The backend tests cover empty, single-element, typical, boundary and failure cas
 
 ## 11. Limitations
 
-- The C++ backend does not yet serve the complete API. Route search and supply allocation currently exist only in the frontend mock engine.
 - The model is a **steady-state snapshot** after each disruption, not a time-stepped simulation.
 - A **single abstract commodity** is modelled. Oil, gas and electricity are not distinguished.
 - The allocation is a **greedy heuristic** and is not guaranteed to be optimal.
@@ -328,7 +330,6 @@ The backend tests cover empty, single-element, typical, boundary and failure cas
 
 ## 12. Future Work
 
-- Implement Dijkstra's algorithm and the priority-based allocation in C++ using the existing MinHeap, and serve the full API contract so the dashboard runs against the real backend.
 - Replace the greedy allocation with a minimum-cost maximum-flow algorithm (for example successive shortest path) for globally optimal redistribution.
 - Add further criticality metrics.
 - Support real, publicly available energy network datasets.

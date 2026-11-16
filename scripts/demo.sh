@@ -5,6 +5,7 @@
 #                               then start backend and frontend (live mode)
 #   ./scripts/demo.sh --fast    skip the unit tests and the smoke test (already verified)
 #   ./scripts/demo.sh --mock    frontend only, with mock data and no backend (fallback)
+#   ./scripts/demo.sh --terminal  open the interactive C++ terminal demo
 #
 # Run it from anywhere; it locates the repository root itself.
 # Ports: backend 8080 (must match the Vite proxy in frontend/vite.config.js), frontend 5173.
@@ -19,15 +20,18 @@ FRONTEND_DIR="$ROOT/frontend"
 BACKEND_PORT=8080
 FRONTEND_PORT=5173
 MODE="full"
+INTERFACE=""
 
 usage() {
-    sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'
 }
 
 for arg in "$@"; do
     case "$arg" in
         --fast) MODE="fast" ;;
         --mock) MODE="mock" ;;
+        --terminal) INTERFACE="terminal" ;;
+        --frontend) INTERFACE="frontend" ;;
         -h|--help) usage; exit 0 ;;
         *) echo "Unknown option: $arg" >&2; usage; exit 1 ;;
     esac
@@ -106,9 +110,11 @@ expect_status() {  # expect_status CODE METHOD PATH [JSON_BODY]
 # ------------------------------------------------------------------ steps
 
 check_tools() {
-    need npm
-    need node
-    need curl
+    if [[ "$INTERFACE" == "frontend" ]]; then
+        need npm
+        need node
+        need curl
+    fi
     if [[ "$MODE" != "mock" ]]; then
         need cmake
         need g++
@@ -228,7 +234,32 @@ banner() {
 # ------------------------------------------------------------------ main
 
 cd "$ROOT"
+if [[ -z "$INTERFACE" ]]; then
+    printf '\n  Choose how to explore GridFlow:\n'
+    printf '  1  Frontend dashboard\n'
+    printf '  2  Terminal demo\n'
+    printf '  Choice [1]: '
+    interface_choice="1"
+    read -r interface_choice || true
+    if [[ "$interface_choice" == "2" ]]; then
+        INTERFACE="terminal"
+    else
+        INTERFACE="frontend"
+    fi
+fi
+
 check_tools
+
+if [[ "$INTERFACE" == "terminal" ]]; then
+    need cmake
+    need g++
+    say "Building terminal demo"
+    cmake -S "$BACKEND_DIR" -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE=Debug >/dev/null
+    cmake --build "$BUILD_DIR" --target gridflow_terminal -j
+    ok "terminal demo built"
+    exec "$BUILD_DIR/gridflow_terminal" --data-dir "$ROOT/data"
+fi
+
 ensure_ports_free
 
 if [[ "$MODE" == "mock" ]]; then
